@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mindflex-eeg-studio"
+version = "1.0.0"
+description = "MindFlex EEG acquisition, monitoring and neuro-control studio"
+requires-python = ">=3.10"
+authors = [{name = "Douglas Santana"}]
+dependencies = [
+  "matplotlib>=3.8,<4",
+  "numpy>=1.26,<3",
+  "pyserial>=3.5,<4",
+  "winrt-runtime>=3.2,<4; platform_system == 'Windows'",
+  "winrt-Windows.Foundation>=3.2,<4; platform_system == 'Windows'",
+  "winrt-Windows.Foundation.Collections>=3.2,<4; platform_system == 'Windows'",
+  "winrt-Windows.Devices.Bluetooth>=3.2,<4; platform_system == 'Windows'",
+  "winrt-Windows.Devices.Bluetooth.Rfcomm>=3.2,<4; platform_system == 'Windows'",
+  "winrt-Windows.Devices.Enumeration>=3.2,<4; platform_system == 'Windows'",
+  "winrt-Windows.Networking>=3.2,<4; platform_system == 'Windows'",
+  "winrt-Windows.Networking.Sockets>=3.2,<4; platform_system == 'Windows'",
+  "winrt-Windows.Storage.Streams>=3.2,<4; platform_system == 'Windows'",
+]
+
+[project.scripts]
+mindflex-studio = "mindflex.ui:run"
+
+[tool.setuptools.packages.find]
+include = ["mindflex*"]
+
+[tool.setuptools.package-data]
+mindflex = ["locales/*.json"]
