@@ -1,0 +1,60 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb python3-tk
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+      - name: Verify source and distribution build
+        run: |
+          python -m compileall -q mindflex tests
+          python -m pip wheel . --no-deps --no-build-isolation -w dist
+      - name: Run unit and GUI smoke tests
+        run: MIND_FLEX_RUN_GUI_TESTS=1 xvfb-run -a python -m unittest discover -s tests -v
+      - name: Check Linux shell startup script syntax and diagnostics
+        run: |
+          sh -n RUN_STUDIO.sh
+          python -m mindflex.launcher --diagnose --no-gui
+      - name: Run offline benchmark
+        run: python -m mindflex.benchmark --output benchmark-results.json
+
+  windows-startup:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install project (including WinRT Bluetooth packages)
+        run: python -m pip install -e .
+      - name: Verify Windows imports and package environment
+        run: python -m mindflex.launcher --diagnose --no-gui
+      - name: Verify Windows distribution build
+        run: python -m pip wheel . --no-deps --no-build-isolation -w dist
+      - name: Windows unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Windows startup batch smoke (Python 3.12)
+        if: matrix.python-version == '3.12'
+        shell: cmd
+        run: call RUN_STUDIO.bat --diagnose --no-gui

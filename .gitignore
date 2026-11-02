@@ -1,0 +1,38 @@
+# Python build and test artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+*.whl
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage*
+htmlcov/
+
+# Environment and editor state
+.venv/
+venv/
+env/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# EEG recordings, calibration models, local profiles and application state
+sessions/
+models/
+metadata/
+logs/
+*.mfs
+*.log
+
+# Generated benchmarks and local scratch files
+benchmark-results*.json
+BENCHMARK_RESULTS.json
+.tmp/
+tmp/
